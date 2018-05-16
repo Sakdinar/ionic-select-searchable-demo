@@ -10,7 +10,11 @@ import { HomePage } from '../pages';
 export class AppComponent {
     rootPage: any = HomePage;
 
-    constructor(private platform: Platform, private statusBar: StatusBar, private splashScreen: SplashScreen) {
+    constructor(
+        private platform: Platform,
+        private statusBar: StatusBar,
+        private splashScreen: SplashScreen
+    ) {
         this.platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
