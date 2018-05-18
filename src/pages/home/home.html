@@ -10,6 +10,7 @@
             itemValueField="id"
             itemTextField="name"
             [items]="ports"
+            [canSearch]="true"
             (onChange)="portChange($event)">
             <ng-template selectSearchableLabelTemplate>
                 Port
