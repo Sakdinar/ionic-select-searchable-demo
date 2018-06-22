@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { ModalController } from 'ionic-angular';
 import { SelectSearchableComponent } from 'ionic-select-searchable';
+import { Subscription } from 'rxjs';
+import { ModalPage } from '../../pages';
 import { PortService } from '../../services';
 import { Port } from '../../types';
 
@@ -10,12 +13,12 @@ import { Port } from '../../types';
 export class HomePage {
     ports: Port[];
     port: Port;
+    portsSubscription: Subscription;
 
     constructor(
-        private portService: PortService
-    ) {
-        this.ports = this.portService.getPorts();
-    }
+        private portService: PortService,
+        private modalController: ModalController
+    ) { }
 
     filterPorts(ports: Port[], text: string) {
         return ports.filter(port => {
@@ -28,20 +31,33 @@ export class HomePage {
         component: SelectSearchableComponent,
         text: string
     }) {
-        let text = (event.text || '').trim().toLowerCase();
+        let text = event.text.trim().toLowerCase();
+        event.component.startSearch();
+
+        // Close any running subscription.
+        if (this.portsSubscription) {
+            this.portsSubscription.unsubscribe();
+        }
 
         if (!text) {
+            // Close any running subscription.
+            if (this.portsSubscription) {
+                this.portsSubscription.unsubscribe();
+            }
+
             event.component.items = [];
-            return;
-        } else if (event.text.length < 1) {
+            event.component.endSearch();
             return;
         }
 
-        event.component.isSearching = true;
+        this.portsSubscription = this.portService.getPortsAsync().subscribe(ports => {
+            // Subscription will be closed when unsubscribed manually.
+            if (this.portsSubscription.closed) {
+                return;
+            }
 
-        this.portService.getPortsAsync().subscribe(ports => {
             event.component.items = this.filterPorts(ports, text);
-            event.component.isSearching = false;
+            event.component.endSearch();
         });
     }
 
@@ -50,5 +66,10 @@ export class HomePage {
         value: any
     }) {
         console.log('port:', event.value);
+    }
+
+    openModal() {
+        let modal = this.modalController.create(ModalPage);
+        modal.present();
     }
 }

@@ -48,7 +48,7 @@ export class FindPortsPage {
             return;
         }
 
-        event.component.isSearching = true;
+        event.component.startSearch();
 
         this.portService.getPortsAsync().subscribe(ports => {
             let items = this.filterPorts(ports, text);
@@ -58,7 +58,7 @@ export class FindPortsPage {
             }
 
             event.component.items = items;
-            event.component.isSearching = false;
+            event.component.endSearch();
         });
     }
 

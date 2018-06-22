@@ -281,7 +281,7 @@ export class PortService {
         return ports;
     }
 
-    getPortsAsync(page?: number, size?: number, timeout = 2000): Observable<Port[]> {
+    getPortsAsync(page?: number, size?: number, timeout = 1000): Observable<Port[]> {
         return new Observable<Port[]>(observer => {
             observer.next(this.getPorts(page, size));
             observer.complete();
