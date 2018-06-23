@@ -5,11 +5,9 @@
 </ion-header>
 <ion-content>
     <ion-item>
-        <select-searchable [(ngModel)]="port" itemValueField="id" itemTextField="name" [items]="ports"
-            (onChange)="portChange($event)" [canSearch]="true" (onSearch)="searchPorts($event)">
-            <ng-template selectSearchableLabelTemplate>
-                Port
-            </ng-template>
+        <ion-label>Port</ion-label>
+        <select-searchable item-content [(ngModel)]="port" itemValueField="id" itemTextField="name"
+            [items]="ports" (onChange)="portChange($event)" [canSearch]="true" (onSearch)="searchPorts($event)">
         </select-searchable>
     </ion-item>
     <ion-item>
