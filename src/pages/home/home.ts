@@ -18,7 +18,9 @@ export class HomePage {
     constructor(
         private portService: PortService,
         private modalController: ModalController
-    ) { }
+    ) {
+        this.ports = this.portService.getPorts();
+    }
 
     filterPorts(ports: Port[], text: string) {
         return ports.filter(port => {

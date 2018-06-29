@@ -7,7 +7,7 @@
     <ion-item>
         <ion-label>Port</ion-label>
         <select-searchable item-content [(ngModel)]="port" itemValueField="id" itemTextField="name"
-            [items]="ports" (onChange)="portChange($event)" [canSearch]="true" (onSearch)="searchPorts($event)">
+            [items]="ports" (onChange)="portChange($event)" [canSearch]="true">
         </select-searchable>
     </ion-item>
     <ion-item>
