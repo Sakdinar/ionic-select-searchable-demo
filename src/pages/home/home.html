@@ -7,10 +7,21 @@
     <ion-item>
         <ion-label>Port</ion-label>
         <select-searchable item-content [(ngModel)]="port" itemValueField="id" itemTextField="name"
-            [items]="ports" (onChange)="portChange($event)" [canSearch]="true">
+            [items]="ports" (onChange)="portChange($event)" [canSearch]="true" [hasVirtualScroll]="false"
+            (onSearch)="searchPorts($event)">
         </select-searchable>
     </ion-item>
+    <!-- <ion-item>
+        <ion-label>Port</ion-label>
+        <select-searchable item-content [(ngModel)]="port" itemValueField="id" itemTextField="name"
+            [items]="ports" [canSearch]="true" [hasInfiniteScroll]="true" (onSearch)="searchPortsInfinite($event)"
+            (onInfiniteScroll)="getMorePorts($event)">
+        </select-searchable>
+    </ion-item> -->
     <ion-item>
         <button ion-button (click)="openModal()">Open Modal</button>
     </ion-item>
+    <!-- <ion-item>
+        <button ion-button (click)="setPorts()">Set Ports</button>
+    </ion-item> -->
 </ion-content>

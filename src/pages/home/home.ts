@@ -14,12 +14,17 @@ export class HomePage {
     ports: Port[];
     port: Port;
     portsSubscription: Subscription;
+    page = 2;
 
     constructor(
         private portService: PortService,
         private modalController: ModalController
     ) {
         this.ports = this.portService.getPorts();
+    }
+
+    setPorts() {
+        this.ports = this.portService.getPorts().slice(0, 5);
     }
 
     filterPorts(ports: Port[], text: string) {
@@ -73,5 +78,68 @@ export class HomePage {
     openModal() {
         let modal = this.modalController.create(ModalPage);
         modal.present();
+    }
+
+    searchPortsInfinite(event: {
+        component: SelectSearchableComponent,
+        text: string
+    }) {
+        let text = event.text.trim().toLowerCase();
+        event.component.startSearch();
+
+        // Close any running subscription.
+        if (this.portsSubscription) {
+            this.portsSubscription.unsubscribe();
+        }
+
+        if (!text) {
+            // Close any running subscription.
+            if (this.portsSubscription) {
+                this.portsSubscription.unsubscribe();
+            }
+
+            event.component.items = this.portService.getPorts(1, 15);
+
+            // Enable and start infinite scroll from the beginning.
+            this.page = 2;
+            event.component.endSearch();
+            event.component.enableInfiniteScroll();
+            return;
+        }
+
+        this.portsSubscription = this.portService.getPortsAsync().subscribe(ports => {
+            // Subscription will be closed when unsubscribed manually.
+            if (this.portsSubscription.closed) {
+                return;
+            }
+
+            event.component.items = this.filterPorts(ports, text);
+            event.component.endSearch();
+        });
+    }
+
+    getMorePorts(event: {
+        component: SelectSearchableComponent,
+        text: string
+    }) {
+        let text = (event.text || '').trim().toLowerCase();
+
+        // There're no more ports - disable infinite scroll.
+        if (this.page > 3) {
+            event.component.disableInfiniteScroll();
+            return;
+        }
+
+        this.portService.getPortsAsync(this.page, 15).subscribe(ports => {
+            ports = event.component.items.concat(ports);
+
+            if (text) {
+                ports = this.filterPorts(ports, text);
+            }
+
+            event.component.items = ports;
+            event.component.endInfiniteScroll();
+            this.page++;
+        });
     }
 }
